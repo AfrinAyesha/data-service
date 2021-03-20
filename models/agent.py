@@ -1,9 +1,10 @@
 from db import db
 
 class AgentModel(db.Model):
-    __tablename_ = 'agents'
+    __tablename__ = 'agents'
     id = db.Column(db.Integer, primary_key=True)
     agent_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True)
+    customers = db.relationship("CustomerModel", backref='agent')
     name = db.Column(db.String(80))
     email = db.Column(db.String(90))
     commision_percentage = db.Column(db.Integer)
@@ -22,7 +23,8 @@ class AgentModel(db.Model):
             'name': self.name,
             'email': self.email,
             'commision_percentage': self.commision_percentage,
-            'rating': self.rating
+            'rating': self.rating,
+            'customers': [customer.json() for customer in self.customers]
         }
 
     def save_to_db(self):
@@ -36,3 +38,6 @@ class AgentModel(db.Model):
     @classmethod
     def find_by_agent_id(cls, agent_id):
         return cls.query.filter_by(agent_id=agent_id).first_or_404(description='There is no data with {}'.format(agent_id))
+
+
+

@@ -26,8 +26,8 @@ class AgentRegister(Resource):
             return {'message': 'username already exists'}, 400
         user = UserModel(data['username'], data['password'], usertype='agent')
         user.save_to_db()
-        userid = UserModel.find_by_username(data['username']).json()['id']
-        agent = AgentModel(userid, data['fullname'], data['email'], data['commision_percentage'])
+        print('user', user.id)
+        agent = AgentModel(user.id, data['fullname'], data['email'], data['commision_percentage'])
         agent.save_to_db()
-        print('user', userid)
         return {'message': 'user created successfully'}, 201
+
