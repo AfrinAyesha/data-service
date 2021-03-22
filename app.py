@@ -95,6 +95,7 @@ api.add_resource(CustomerList, '/customers')
 api.add_resource(Customer, '/customer/<int:customer_id>')
 api.add_resource(Policy, '/policy')
 
+db.init_app(app)
 if __name__ == '__main__':
-    db.init_app(app)
+
     app.run(port=8080, debug=True)
