@@ -1,3 +1,4 @@
+from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
 from flask_restful import Resource, reqparse
 
 from models.agent import AgentModel
@@ -15,7 +16,7 @@ class AgentsList(Resource):
 class AgentRegister(Resource):
     user_reg_parser = reqparse.RequestParser()
     user_reg_parser.add_argument('fullname', type=str, required=True, help='full name required')
-    user_reg_parser.add_argument('username', type=str,required=True, help='username required')
+    user_reg_parser.add_argument('username', type=str, required=True, help='username required')
     user_reg_parser.add_argument('email', type=str, required=True, help='emailId required')
     user_reg_parser.add_argument('password', type=str, required=True, help='password required')
     user_reg_parser.add_argument('commision_percentage', type=int, required=True, help='commision percentage required')
@@ -31,3 +32,13 @@ class AgentRegister(Resource):
         agent.save_to_db()
         return {'message': 'user created successfully'}, 201
 
+
+class Agent(Resource):
+    @jwt_required()
+    def get(self):
+        agent_id = get_jwt_identity()
+        agent = AgentModel.find_by_agent_id(agent_id)
+        if agent is None:
+            return {'message': 'Invalid Agent Id'}, 400
+        return {'agent': agent.json()}, 200
+        return 200

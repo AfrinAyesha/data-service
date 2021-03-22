@@ -7,7 +7,7 @@ from flask_jwt_extended import JWTManager
 
 from blacklist import BLACKLIST
 from models.user import UserModel
-from resources.agent import AgentsList, AgentRegister
+from resources.agent import AgentsList, AgentRegister, Agent
 from resources.policy import Policy
 from resources.user import Users, UserLogin, UserLogout, TokenRefresh
 from resources.customer import CustomerList, Customer, CustomerRegister
@@ -46,7 +46,7 @@ def add_claims_to_jwt(identity):
 
 
 @jwt.expired_token_loader
-def expired_token_callback():
+def expired_token_callback(header, data):
     return {
         'message': 'The token has expired.',
         'error': 'token_expired'
@@ -89,6 +89,7 @@ api.add_resource(UserLogout, '/logout')
 api.add_resource(TokenRefresh, '/refresh')
 api.add_resource(AgentRegister, '/register/agent')
 api.add_resource(AgentsList, '/agents')
+api.add_resource(Agent, '/agent')
 api.add_resource(CustomerRegister, '/register/customer')
 api.add_resource(CustomerList, '/customers')
 api.add_resource(Customer, '/customer/<int:customer_id>')
